@@ -1,8 +1,5 @@
 ﻿#include <iostream>
 #include <fstream>
-
-//ВАРИАНТ 13
-
 /*
 Напишите программу, выполняющую ввод строк из файла и проверку соответствия каждой введенной строки правилу (в соответствии с указанным вариантом).
 Входные данные: Символьная строка. Ввести из файла потока cin.
@@ -62,8 +59,6 @@ bool isNumber(char** s)
     return false;
 }
 
-
-
 bool isMultiplier(char** s)
 {
     if (isLetter(s))
@@ -80,9 +75,9 @@ bool isMultiplier(char** s)
                 *s = *s + 1;
                 return true;
             }
-            return false;
+
         }
-        return false;
+
     }
     return false;
 }
@@ -155,7 +150,6 @@ int main()
     {
         char* s = new char[size + 1];
 
-        //fin.ignore('\n');
         fin.getline(s, size);
 
         char* s2 = s;
