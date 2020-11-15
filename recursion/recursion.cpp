@@ -1,10 +1,10 @@
 ﻿#include <iostream>
 #include <fstream>
 
-//ВАРИАНТ 13
-
 /*
-Напишите программу, выполняющую ввод строк из файла и проверку соответствия каждой введенной строки правилу (в соответствии с указанным вариантом).
+
+Напишите программу, выполняющую ввод строк из файла и проверку соответствия каждой введенной строки правилу
+(в соответствии с указанным вариантом).
 Входные данные: Символьная строка. Ввести из файла потока cin.
 Выходные данные: «ДА», если строка соответствует правилу, «НЕТ», если строка НЕ соответствует правилу.
 
@@ -35,7 +35,7 @@ bool isLetter(char**);
 //<буква> ::= a | b | c | d | e | f | x | y | z
 bool isLetter(char** s)
 {
-	if ((**s >= 'a' && **s <= 'f') || **s == 'x' || **s == 'y' || **s == 'z') {
+	if ((**s >= 'a' && **s <= 'f') || (**s >= 'x' && **s <= 'z')) {
 		*s += 1;
 		return true;
 	}
@@ -51,11 +51,10 @@ bool isDigit(char** s)
 		*s += 1;
 		return true;
 	}
-	else
-		return false;
+	return false;
 }
 
-//<целое без знака> ::= <цифра>
+//<целое без знака> :: = <цифра> | <цифра> <целое без знака>
 bool isInteger(char** s)
 {
 	if (isDigit(s))
@@ -63,18 +62,17 @@ bool isInteger(char** s)
 		isInteger(s);
 		return true;
 	}
-	else
-		return false;
+	return false;
 }
 
-//<множитель> ::= <цифра>| <буква> | (<выражение>)
+//<множитель> ::= <целое без знака> | <буква> | (<выражение>)
 bool isMultiplier(char** s)
 {
 	if (isInteger(s) || isLetter(s))
 	{
 		return true;
 	}
-	else if(**s == '(')
+	if (**s == '(')
 	{
 		*s += 1;
 		if (isExpression(s))
@@ -85,52 +83,51 @@ bool isMultiplier(char** s)
 				return true;
 			}
 		}
-		return isExpression;
 	}
-	else
-	{
-		return false;
-	}
+	return false;
 }
 
 //<терм> ::= <множитель> | (<множитель> * <терм>) |(<множитель> / <терм>)
 bool isTerm(char** s) {
 	if (isMultiplier(s))
 	{
-		if (**s == '(')
-		{
-			*s += 1;
-			if ((isMultiplier(s)) && (**s == '*' || **s == '/'))
-			{
-				*s += 1;
-				if (**s == ')')
-				{
-					*s += 1;
-					return isTerm;
-				}
-
-			}
-
-		}
 		return true;
 	}
-	else
+	else if (**s == '(')
 	{
-		return false;
+		*s += 1;
+		if (isMultiplier(s))
+		{
+			if (**s == '*' || **s == '/')
+			{
+				*s += 1;
+				if (isTerm(s))
+				{
+					if (**s == ')')
+					{
+						*s += 1;
+						return true;
+					}
+				}
+			}
+		}
 	}
+		return false;
 }
 
 //<выражение> ::= <терм> | <терм> +<выражение> | <терм> – <выражение>
-bool isExpression(char** s) {
-	if (isTerm(s)) {
-		if (**s == '+' || **s == '-') {
-			*s = *s + 1;
+bool isExpression(char** s)
+{
+	if (isTerm(s))
+	{
+		if (**s == '+' || **s == '-')
+		{
+			*s += 1;
 			return isExpression(s);
 		}
 		return true;
 	}
-	else
-		return false;
+	return false;
 }
 
 int main()
@@ -145,6 +142,8 @@ int main()
 	while (!fin.eof())
 	{
 		char* s = new char[size + 1];
+
+		//fin.ignore('\n');
 		fin.getline(s, size);
 
 		char* s2 = s;
@@ -157,5 +156,6 @@ int main()
 		delete[] s;
 	}
 
+	fin.close();
 	return 0;
 }
